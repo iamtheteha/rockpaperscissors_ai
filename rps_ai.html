@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPS_Ai</title>
+</head>
+
+<body style="background-color: white; position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+    <div style="width: 250px;height: 220px;background-color: black;">
+        <div style="width: 50%; height: 120px; text-align: center; color: white; float: left;">
+            <a style="font-size: 40px;">YOU</a><br>
+            <a id="count_You" style="font-size: 60px;">0</a>
+        </div>
+        <div style="width: 50%; height: 120px; text-align: center; color: white;float: right;">
+            <a style="font-size: 40px;">AI</a><br>
+            <a id="count_Ai" style="font-size: 60px;">0</a>
+        </div>
+        <div style="width: 100%; height: 50%; text-align: center; color: white;float: left;">
+            <a id="text_Count" style="font-size: 15px;">/</a><br>
+            <b id="text_Info" style="font-size: 15px;">Start</b><br>
+            <button id="button_Rock" style="width: 70px; height: 45px; font-size:larger;color: white; background-color: gray; margin: 5px;margin-top: 10px;"> Rock </button>
+            <button id="button_Paper" style="width: 70px; height: 45px; font-size:larger;color: white; background-color: gray; margin: 5px;margin-top: 10px;"> Paper </button>
+            <button id="button_Scissors" style="width: 70px; height: 45px; font-size:15px;color: white; background-color: gray; margin: 5px;margin-top: 10px;"> Scissors </button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var you = "";
+        var pocket = "";
+        var count_Ai = 0;
+        var count_You = 0;
+        var alternatives = ["Rock", "Paper", "Scissors"];
+
+        var json = {
+            "Rock": {
+                "Max": ["", 0.0],
+                "Rock": 0,
+                "Paper": 0,
+                "Scissors": 0
+            },
+            "Paper": {
+                "Max": ["", 0.0],
+                "Rock": 0,
+                "Paper": 0,
+                "Scissors": 0
+            },
+            "Scissors": {
+                "Max": ["", 0.0],
+                "Rock": 0,
+                "Paper": 0,
+                "Scissors": 0
+            }
+        }
+
+
+        document.getElementById("button_Rock").onclick = function() {
+            you = "Rock";
+            vs();
+        }
+        document.getElementById("button_Paper").onclick = function() {
+            you = "Paper";
+            vs();
+        }
+        document.getElementById("button_Scissors").onclick = function() {
+            you = "Scissors";
+            vs();
+        }
+
+
+        function vs() {
+
+            if (pocket == "") {
+                var ai = alternatives[Math.floor(Math.random() * alternatives.length)];
+                if (ai == you) {
+                    document.getElementById("text_Info").innerHTML = "Draws";
+                    document.getElementById("text_Info").style.color="white";
+                    document.getElementById("text_Count").innerHTML = you + " / " + ai;
+                } else if (ai == "Rock" && you == "Scissors" || ai == "Paper" && you == "Rock" || ai == "Scissors" && you == "Paper") {
+                    document.getElementById("text_Info").innerHTML = "Ai Won";
+                    document.getElementById("text_Info").style.color="red";
+                    document.getElementById("text_Count").innerHTML = you + " / " + ai;
+                    count_Ai = count_Ai + 1;
+                    document.getElementById("count_Ai").innerHTML = count_Ai;
+                } else {
+                    document.getElementById("text_Info").innerHTML = "Win";
+                    document.getElementById("text_Info").style.color="green";
+                    document.getElementById("text_Count").innerHTML = you + " / " + ai;
+                    count_You = count_You + 1;
+                    document.getElementById("count_You").innerHTML = count_You;
+                }
+                pocket = you;
+            } else {
+                if (pocket == "Rock") {
+                    rps(json.Rock);
+                } else if (pocket == "Paper") {
+                    rps(json.Paper);
+                } else {
+                    rps(json.Scissors);
+                }
+
+            }
+
+            function rps(alternative) {
+                for (x in alternative) {
+                    if (x == you) {
+                        alternative[x] += 1;
+                        var big = Math.max(alternative.Rock, alternative.Paper, alternative.Scissors);
+                        var percent = big / (alternative.Rock + alternative.Paper + alternative.Scissors) * 100;
+                        if (alternative.Rock == big) {
+                            alternative.Max[0] = "Rock";
+                            alternative.Max[1] = percent;
+                            ai = "Paper";
+
+                        } else if (alternative.Paper == big) {
+                            alternative.Max[0] = "Paper";
+                            alternative.Max[1] = percent;
+                            ai = "Scissors";
+
+                        } else {
+                            alternative.Max[0] = "Scissors";
+                            alternative.Max[1] = percent;
+                            ai = "Rock";
+
+                        }
+                    }
+                }
+
+                if (ai == you) {
+                    document.getElementById("text_Info").innerHTML = "Draws";
+                    document.getElementById("text_Info").style.color="white";
+                    document.getElementById("text_Count").innerHTML = you + " / " + ai;
+                } else if (ai == "Rock" && you == "Scissors" || ai == "Paper" && you == "Rock" || ai == "Scissors" && you == "Paper") {
+                    document.getElementById("text_Info").innerHTML = "Ai Won";
+                    document.getElementById("text_Info").style.color="red";
+                    document.getElementById("text_Count").innerHTML = you + " / " + ai;
+                    count_Ai = count_Ai + 1;
+                    document.getElementById("count_Ai").innerHTML = count_Ai;
+                } else {
+                    document.getElementById("text_Info").innerHTML = "Win";
+                    document.getElementById("text_Info").style.color="green";
+                    document.getElementById("text_Count").innerHTML = you + " / " + ai;
+                    count_You = count_You + 1;
+                    document.getElementById("count_You").innerHTML = count_You;
+                }
+                pocket = you;
+            }
+        }
+    </script>
+</body>
+
+</html>
